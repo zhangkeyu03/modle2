@@ -5,14 +5,14 @@ import tldextract
 from collections import defaultdict
 import time
 
-# 设置全局变量
+# Глобальные переменные
 visited = set()
 broken_links = []
 internal_links = set()
 external_links = set()
 file_links = set()
 subdomains = set()
-max_pages = 200  # 限制访问页面数，防止爬爆
+max_pages = 200  # Ограничение количества посещённых страниц
 
 def is_valid_url(url):
     parsed = urlparse(url)
@@ -22,17 +22,17 @@ def crawl(url, base_domain):
     global visited
     if url in visited or len(visited) >= max_pages:
         return
-    print(f"[+] 访问：{url}")
+    print(f"[+] Посещаю: {url}")
     visited.add(url)
 
     try:
         response = requests.get(url, timeout=5)
         if response.status_code != 200:
-            print(f"[x] 失效链接：{url}")
+            print(f"[x] Недоступная ссылка: {url}")
             broken_links.append(url)
             return
     except Exception as e:
-        print(f"[!] 请求错误：{url} - {e}")
+        print(f"[!] Ошибка запроса: {url} - {e}")
         broken_links.append(url)
         return
 
@@ -54,23 +54,23 @@ def crawl(url, base_domain):
         else:
             external_links.add(full_url)
 
-        # 检查是否是文件链接
+        # Проверка на ссылку на файл
         if any(full_url.endswith(ext) for ext in ['.pdf', '.doc', '.docx']):
             file_links.add(full_url)
 
-# 主入口
+# Точка входа
 if __name__ == '__main__':
     start_time = time.time()
     start_url = "https://spbu.ru"
     domain = "spbu.ru"
     crawl(start_url, domain)
 
-    # 输出统计结果
-    print("\n --- 统计结果 ---")
-    print(f"总访问页面数: {len(visited)}")
-    print(f"内部页面数: {len(internal_links)}")
-    print(f"失效页面数: {len(broken_links)}")
-    print(f"子域名数: {len(subdomains)} ({subdomains})")
-    print(f"外部链接数: {len(external_links)}")
-    print(f"唯一文档链接数: {len(file_links)}")
-    print(f"耗时：{round(time.time() - start_time, 2)} 秒")
+    # Вывод результатов
+    print("\n --- Результаты ---")
+    print(f"Всего посещено страниц: {len(visited)}")
+    print(f"Внутренние страницы: {len(internal_links)}")
+    print(f"Недоступные страницы: {len(broken_links)}")
+    print(f"Поддомены: {len(subdomains)} ({subdomains})")
+    print(f"Внешние ссылки: {len(external_links)}")
+    print(f"Уникальные ссылки на документы: {len(file_links)}")
+    print(f"Время выполнения: {round(time.time() - start_time, 2)} секунд")
