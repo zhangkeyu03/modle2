@@ -92,7 +92,24 @@ def get_user_input():
         except Exception as e:
             print(f"Ошибка анализа URL: {e}")
             continue
+def save_results_to_csv():
+    filename = "scan_results.csv"
+    with open(filename, mode='w', newline='', encoding='utf-8') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(['Тип', 'Ссылка'])  # Заголовки
 
+        for link in internal_links:
+            writer.writerow(['Внутренняя', link])
+        for link in external_links:
+            writer.writerow(['Внешняя', link])
+        for link in broken_links:
+            writer.writerow(['Недоступная', link])
+        for link in file_links:
+            writer.writerow(['Файл', link])
+        for sub in subdomains:
+            writer.writerow(['Поддомен', sub])
+
+    print(f"\n[✔] Результаты сохранены в файл: {filename}")
 
 # Главный вход
 if __name__ == '__main__':
@@ -114,3 +131,5 @@ if __name__ == '__main__':
     print(f"Количество внешних ссылок: {len(external_links)}")
     print(f"Уникальные ссылки на документы: {len(file_links)}")
     print(f"Время：{round(time.time() - start_time, 2)} секунд")
+# Сохраняем в файл
+    save_results_to_csv()
